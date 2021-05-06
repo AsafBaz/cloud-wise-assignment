@@ -6,13 +6,17 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UserFormComponent } from './user-form/user-form.component';
 import { MaterialModule } from './material/material.module';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module'
+import { RouterModule }   from '@angular/router';
+import { ResponsePageComponent } from './response-page/response-page.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserFormComponent
+    UserFormComponent,
+    ResponsePageComponent
   ],
   imports: [
     BrowserModule,
@@ -20,7 +24,12 @@ import { HttpClientModule } from '@angular/common/http'
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    AppRoutingModule,
+    RouterModule.forRoot([
+      { path: '', component: UserFormComponent},
+      { path: 'response-page/:data', component: ResponsePageComponent }
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

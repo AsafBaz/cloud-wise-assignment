@@ -4,6 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { Router, NavigationExtras } from '@angular/router'
 
 @Component({
   selector: 'app-user-form',
@@ -17,7 +18,7 @@ export class UserFormComponent {
   mpgLabel: string = '';
   form: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.form = fb.group({
       email: [localStorage.getItem('email'), [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$")]],
       password: [localStorage.getItem('password'), [Validators.required, Validators.minLength(6)]],
@@ -44,7 +45,7 @@ export class UserFormComponent {
 
   // on form submit
   submit() {
-    let params =  {
+    const params =  {
       email: this.form.value.email,
       password: this.form.value.password,
       fullName: this.form.value.fullName,
@@ -54,12 +55,13 @@ export class UserFormComponent {
      }
 
     this.http.post('https://www.cloud-wise.net/CloudApps/Server/api/log', params).toPromise().then(data => {
-      console.log(data)
+      this.router.navigate(['response-page/', JSON.stringify(data)]);
     })
+    
+
   }
 
   onClick() {
-    console.log('hello')
     let mpg = this.convertKMLtoMPG(this.form.value.fuelConsumption);
     this.mpgLabel = "Fuel consumption converted to Miles/Gallons: " + mpg;
   }
@@ -72,6 +74,5 @@ export class UserFormComponent {
     this.form.controls['phone'].setValue('');
     this.form.controls['vehicleNumber'].setValue('');
     this.form.controls['fuelConsumption'].setValue('');
-    // this.form.reset(); results in unwanted behaviour - sets all values to 'null'
   }
 }
